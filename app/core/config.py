@@ -56,21 +56,39 @@ class Settings(BaseSettings):
             },
         ),
         FileType.IMAGE_STORAGE: StorageAdapterConfig(
-            type="gwm",
+            type="s3",
             config={
-                "bucket_name": "gwm-image-bucket",
-                "project_id": "my-gcp-project",
-                "credentials_file": os.getenv("GWM_CREDENTIALS"),
+                "bucket_name": "pdf-invoice-bucket",
+                "region": "eu-central-1",
+                "access_key": os.getenv("S3_INVOICE_ACCESS_KEY"),
+                "secret_key": os.getenv("S3_INVOICE_SECRET_KEY"),
             },
         ),
         FileType.LOCAL_STORAGE: StorageAdapterConfig(
-            type="tcp",
+            type="s3",
             config={
-                "storage_path": "/var/storage/files",
-                "host": "127.0.0.1",
-                "port": 9000,
+                "bucket_name": "pdf-invoice-bucket",
+                "region": "eu-central-1",
+                "access_key": os.getenv("S3_INVOICE_ACCESS_KEY"),
+                "secret_key": os.getenv("S3_INVOICE_SECRET_KEY"),
             },
         ),
+        # FileType.IMAGE_STORAGE: StorageAdapterConfig(
+        #     type="s3",
+        #     config={
+        #         "bucket_name": "gwm-image-bucket",
+        #         "project_id": "my-gcp-project",
+        #         "credentials_file": os.getenv("GWM_CREDENTIALS"),
+        #     },
+        # ),
+        # FileType.LOCAL_STORAGE: StorageAdapterConfig(
+        #     type="s3",
+        #     config={
+        #         "storage_path": "/var/storage/files",
+        #         "host": "127.0.0.1",
+        #         "port": 9000,
+        #     },
+        # )
     }
 
 settings = Settings()

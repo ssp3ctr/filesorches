@@ -2,6 +2,7 @@ from typing import Dict, Optional, Type
 from sqlalchemy.orm import Session
 from app.adapters.s3_adapter import S3Adapter
 from app.adapters.tcp_adapter import TCPAdapter
+from app.adapters.gwm_adapter import GWMAdapter
 from app.adapters.base import BaseStorageAdapter
 from app.core.config import settings
 from app.schemas.file_type import FileType
@@ -11,7 +12,8 @@ class StorageService:
     # Маппинг доступных адаптеров
     ADAPTERS: Dict[str, Type[BaseStorageAdapter]] = {
         "s3": S3Adapter,
-        "tcp": TCPAdapter
+        "tcp": TCPAdapter,
+        "gwm": GWMAdapter,
     }
 
     def __init__(self):
