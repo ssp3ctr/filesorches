@@ -3,6 +3,7 @@ import shutil
 from app.adapters.base import BaseStorageAdapter
 from typing import Dict, Optional
 
+
 class GWMAdapter(BaseStorageAdapter):
     def __init__(self, config: Dict):
         super().__init__(config)

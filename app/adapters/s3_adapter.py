@@ -3,6 +3,7 @@ from botocore.exceptions import NoCredentialsError, BotoCoreError
 from app.adapters.base import BaseStorageAdapter
 from typing import Dict, Optional
 
+
 class S3Adapter(BaseStorageAdapter):
     def __init__(self, config: Dict):
         super().__init__(config)

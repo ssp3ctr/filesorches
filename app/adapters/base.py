@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
 
+
 class BaseStorageAdapter(ABC):
     def __init__(self, config: Dict):
         """

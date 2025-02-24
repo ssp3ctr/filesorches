@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.schemas.file_type import FileType
 import os
 
+
 class StorageService:
     # Маппинг доступных адаптеров
     ADAPTERS: Dict[str, Type[BaseStorageAdapter]] = {
@@ -20,7 +21,7 @@ class StorageService:
         self.adapters: Dict[FileType, BaseStorageAdapter] = {}
 
         # Инициализация адаптеров по конфигурации
-        for file_type, adapter_data in settings.STORAGE_ADAPTERS.items():
+        for file_type, adapter_data in settings.storage_adapters.items():
             adapter_type = adapter_data.type
             config = adapter_data.config
 
@@ -48,7 +49,6 @@ class StorageService:
         file_url = result["url"]
         file_size = os.path.getsize(file_path)
         file_extension = os.path.splitext(file_name)[-1].lstrip(".")
-
 
         return {"file_id": file_id, "url": file_url, "file_size":file_size, "file_extension":file_extension}
 

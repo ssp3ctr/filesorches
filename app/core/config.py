@@ -4,12 +4,13 @@ from typing import Dict, Literal, Any
 from app.schemas.file_type import FileType
 import os
 
+
 class StorageAdapterConfig(BaseModel):
     type: Literal["s3", "gwm", "tcp"]
     config: Dict[str, Any]
 
+
 class Settings(BaseSettings):
-    # Use the new-style model_config instead of class Config
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="allow"
@@ -28,6 +29,12 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
 
+    S3_ACCESS_KEY: str
+    S3_SECRET_KEY: str
+
+    S3_INVOICE_ACCESS_KEY: str
+    S3_INVOICE_SECRET_KEY: str
+
     @property
     def database_url(self) -> str:
         return (
@@ -35,44 +42,50 @@ class Settings(BaseSettings):
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
 
-    # Маппинг типов файлов на адаптеры
-    STORAGE_ADAPTERS: Dict[FileType, StorageAdapterConfig] = {
-        FileType.PDF_CO: StorageAdapterConfig(
-            type="s3",
-            config={
-                "bucket_name": "pdf-co-bucket",
-                "region": "us-west-1",
-                "access_key": os.getenv("S3_ACCESS_KEY"),
-                "secret_key": os.getenv("S3_SECRET_KEY"),
-            },
-        ),
-        FileType.PDF_INVOICE: StorageAdapterConfig(
-            type="s3",
-            config={
-                "bucket_name": "pdf-invoice-bucket",
-                "region": "eu-central-1",
-                "access_key": os.getenv("S3_INVOICE_ACCESS_KEY"),
-                "secret_key": os.getenv("S3_INVOICE_SECRET_KEY"),
-            },
-        ),
-        FileType.IMAGE_STORAGE: StorageAdapterConfig(
-            type="s3",
-            config={
-                "bucket_name": "pdf-invoice-bucket",
-                "region": "eu-central-1",
-                "access_key": os.getenv("S3_INVOICE_ACCESS_KEY"),
-                "secret_key": os.getenv("S3_INVOICE_SECRET_KEY"),
-            },
-        ),
-        FileType.LOCAL_STORAGE: StorageAdapterConfig(
-            type="s3",
-            config={
-                "bucket_name": "pdf-invoice-bucket",
-                "region": "eu-central-1",
-                "access_key": os.getenv("S3_INVOICE_ACCESS_KEY"),
-                "secret_key": os.getenv("S3_INVOICE_SECRET_KEY"),
-            },
-        ),
+    @property
+    def storage_adapters(self) -> Dict[FileType, StorageAdapterConfig]:
+        return {
+            FileType.PDF_CO: StorageAdapterConfig(
+                type="s3",
+                config={
+                    "bucket_name": "orders-pdf-bucket",
+                    "region": "eu-central-1",
+                    "access_key": self.S3_ACCESS_KEY,
+                    "secret_key": self.S3_SECRET_KEY,
+                },
+            ),
+            FileType.PDF_INVOICE: StorageAdapterConfig(
+                type="s3",
+                config={
+                    "bucket_name": "orders-pdf-bucket",
+                    "region": "eu-central-1",
+                    "access_key": self.S3_INVOICE_ACCESS_KEY,
+                    "secret_key": self.S3_INVOICE_SECRET_KEY,
+                },
+            ),
+            FileType.IMAGE_STORAGE: StorageAdapterConfig(
+                type="s3",
+                config={
+                    "bucket_name": "orders-pdf-bucket",
+                    "region": "eu-central-1",
+                    "access_key": self.S3_INVOICE_ACCESS_KEY,
+                    "secret_key": self.S3_INVOICE_SECRET_KEY,
+                },
+            ),
+            FileType.LOCAL_STORAGE: StorageAdapterConfig(
+                type="s3",
+                config={
+                    "bucket_name": "orders-pdf-bucket",
+                    "region": "eu-central-1",
+                    "access_key": self.S3_INVOICE_ACCESS_KEY,
+                    "secret_key": self.S3_INVOICE_SECRET_KEY,
+                },
+            ),
+        }
+
+
+settings = Settings()
+
         # FileType.IMAGE_STORAGE: StorageAdapterConfig(
         #     type="s3",
         #     config={
@@ -89,6 +102,6 @@ class Settings(BaseSettings):
         #         "port": 9000,
         #     },
         # )
-    }
+    # }
 
-settings = Settings()
+
