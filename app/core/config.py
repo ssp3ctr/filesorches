@@ -42,7 +42,7 @@ class Settings(BaseSettings):
             FileType.PDF_CO: StorageAdapterConfig(
                 type="s3",
                 config={
-                    "pub_bucket_url": "files-viyar.tech",
+                    "pub_bucket_url": self.S3_PDF_HOST,
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_ACCESS_KEY,
@@ -52,7 +52,7 @@ class Settings(BaseSettings):
             FileType.PDF_INVOICE: StorageAdapterConfig(
                 type="s3",
                 config={
-                    "pub_bucket_url": "files-viyar.tech",
+                    "pub_bucket_url": self.S3_PDF_HOST,
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_INVOICE_ACCESS_KEY,
@@ -62,7 +62,7 @@ class Settings(BaseSettings):
             FileType.PDF_SPEC: StorageAdapterConfig(
                 type="s3",
                 config={
-                    "pub_bucket_url": "files-viyar.tech",
+                    "pub_bucket_url": self.S3_PDF_HOST,
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_INVOICE_ACCESS_KEY,
@@ -72,7 +72,7 @@ class Settings(BaseSettings):
             FileType.PRODUCT_IMAGE: StorageAdapterConfig(
                 type="s3",
                 config={
-                    "pub_bucket_url": "files-viyar.tech",
+                    "pub_bucket_url": self.S3_IMAGE_HOST,
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_INVOICE_ACCESS_KEY,
