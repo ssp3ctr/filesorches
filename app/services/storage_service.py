@@ -5,7 +5,7 @@ from app.adapters.tcp_adapter import TCPAdapter
 from app.adapters.gwm_adapter import GWMAdapter
 from app.adapters.base import BaseStorageAdapter
 from app.core.config import settings
-from app.schemas.file_type import FileType
+from app.schemas.file import FileType
 import os
 
 
@@ -34,17 +34,12 @@ class StorageService:
             self.adapters[file_type] = adapter_class(config)
 
     def upload_file(self, db: Session, file_type: FileType, file_path: str, file_name: str, folder: Optional[str] = None, tags: Optional[list] = None):
-        """
-        Загружает файл в адаптер и сохраняет метаданные в БД.
-        """
         if file_type not in self.adapters:
             raise ValueError(f"Адаптер для типа '{file_type}' не настроен")
 
-        # Отправляем файл в хранилище
         adapter = self.adapters[file_type]
         result = adapter.upload_file(file_path, file_name, folder)
 
-        # Получаем URL и ID файла из адаптера
         file_id = result["file_id"]
         file_url = result["url"]
         file_size = os.path.getsize(file_path)

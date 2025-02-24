@@ -7,7 +7,7 @@ import os
 import uuid
 
 from app.database.postgre_engine import get_db
-from app.schemas.file_type import FileType
+from app.schemas.file import FileType
 from app.services.file_metadata_service import FileMetadataService
 from app.services.storage_service import StorageService
 

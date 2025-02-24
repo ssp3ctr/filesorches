@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from app.models.file import FileMetadata
-from app.schemas.file_type import FileType
+from app.schemas.file import FileType
 import uuid
 from typing import List, Optional
 

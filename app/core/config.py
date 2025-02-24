@@ -1,13 +1,7 @@
-from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Dict, Literal, Any
-from app.schemas.file_type import FileType
-import os
-
-
-class StorageAdapterConfig(BaseModel):
-    type: Literal["s3", "gwm", "tcp"]
-    config: Dict[str, Any]
+from typing import Dict
+from app.schemas.file import FileType
+from app.schemas.configs import StorageAdapterConfig
 
 
 class Settings(BaseSettings):
@@ -48,6 +42,7 @@ class Settings(BaseSettings):
             FileType.PDF_CO: StorageAdapterConfig(
                 type="s3",
                 config={
+                    "pub_bucket_url": "files-viyar.tech",
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_ACCESS_KEY,
@@ -57,24 +52,27 @@ class Settings(BaseSettings):
             FileType.PDF_INVOICE: StorageAdapterConfig(
                 type="s3",
                 config={
+                    "pub_bucket_url": "files-viyar.tech",
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_INVOICE_ACCESS_KEY,
                     "secret_key": self.S3_INVOICE_SECRET_KEY,
                 },
             ),
-            FileType.IMAGE_STORAGE: StorageAdapterConfig(
+            FileType.PDF_SPEC: StorageAdapterConfig(
                 type="s3",
                 config={
+                    "pub_bucket_url": "files-viyar.tech",
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_INVOICE_ACCESS_KEY,
                     "secret_key": self.S3_INVOICE_SECRET_KEY,
                 },
             ),
-            FileType.LOCAL_STORAGE: StorageAdapterConfig(
+            FileType.PRODUCT_IMAGE: StorageAdapterConfig(
                 type="s3",
                 config={
+                    "pub_bucket_url": "files-viyar.tech",
                     "bucket_name": "orders-pdf-bucket",
                     "region": "eu-central-1",
                     "access_key": self.S3_INVOICE_ACCESS_KEY,
