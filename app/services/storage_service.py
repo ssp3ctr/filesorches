@@ -21,7 +21,7 @@ class StorageService:
         self.adapters: Dict[FileType, BaseStorageAdapter] = {}
 
         # Инициализация адаптеров по конфигурации
-        for file_type, adapter_data in settings.storage_adapters.items():
+        for file_type, adapter_data in settings.storage_adapters().items():
             adapter_type = adapter_data.type
             config = adapter_data.config
 

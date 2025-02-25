@@ -23,11 +23,15 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
 
+    # S3
     S3_ACCESS_KEY: str
     S3_SECRET_KEY: str
 
     S3_INVOICE_ACCESS_KEY: str
     S3_INVOICE_SECRET_KEY: str
+
+    S3_PDF_HOST: str
+    S3_IMAGE_HOST: str
 
     @property
     def database_url(self) -> str:
@@ -36,7 +40,6 @@ class Settings(BaseSettings):
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
 
-    @property
     def storage_adapters(self) -> Dict[FileType, StorageAdapterConfig]:
         return {
             FileType.PDF_CO: StorageAdapterConfig(

@@ -3,6 +3,7 @@ import shutil
 from app.adapters.base import BaseStorageAdapter
 from typing import Dict, Optional
 
+
 class TCPAdapter(BaseStorageAdapter):
     def __init__(self, config: Dict):
         super().__init__(config)
@@ -10,7 +11,6 @@ class TCPAdapter(BaseStorageAdapter):
         self.host = config["host"]
         self.port = config["port"]
 
-        # Создаем папку, если ее нет
         os.makedirs(self.storage_path, exist_ok=True)
 
     def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
