@@ -11,7 +11,6 @@ class GWMAdapter(BaseStorageAdapter):
         self.host = config["host"]
         self.port = config["port"]
 
-        # Создаем папку, если ее нет
         os.makedirs(self.storage_path, exist_ok=True)
 
     def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
