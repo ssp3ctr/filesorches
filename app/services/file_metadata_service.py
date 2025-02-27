@@ -1,5 +1,9 @@
+import logging
+
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import select
+
 from app.models.file import FileMetadata
 from app.schemas.file import FileType
 import uuid
@@ -35,9 +39,15 @@ class FileMetadataService:
         return db.query(FileMetadata).filter(FileMetadata.id == file_id).first()
 
     @staticmethod
-    def get_files_by_tags(db: Session, tags: List[str]) -> List[FileMetadata]:
-        """ Фильтрация файлов по тегам (ищем файлы, содержащие хотя бы один из указанных тегов) """
-        return db.query(FileMetadata).filter(FileMetadata.tags.overlap(tags)).all()
+    def get_files_by_tags(db: Session, tags: list[str]):
+        logging.info(f"Searching for tags: {tags} (Type: {type(tags)})")
+
+        # Убедимся, что tags - это список, а не строка
+        if not isinstance(tags, list):
+            raise ValueError(f"Expected list[str], but got {type(tags)}: {tags}")
+
+        stmt = select(FileMetadata).where(FileMetadata.tags.overlap(tags))
+        return db.execute(stmt).scalars().all()
 
     @staticmethod
     def delete_file(db: Session, file_id: uuid.UUID) -> bool:

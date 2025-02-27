@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException
+from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException, Query
 from typing import List, Optional
 from sqlalchemy.orm import Session
 import shutil
@@ -71,7 +71,10 @@ def get_file(file_id: uuid.UUID, db: Session = Depends(get_db)):
 
 
 @router.get("/files/")
-def search_files_by_tags(tags: List[str], db: Session = Depends(get_db)):
+def search_files_by_tags(
+    tags: List[str] = Query(..., description="List of tags"),
+    db: Session = Depends(get_db)
+):
     return FileMetadataService.get_files_by_tags(db, tags)
 
 
