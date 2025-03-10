@@ -1,12 +1,13 @@
 from typing import Dict, Optional, Type
-from sqlalchemy.orm import Session
+import asyncio
+import os
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.adapters.s3_adapter import S3Adapter
 from app.adapters.tcp_adapter import TCPAdapter
 from app.adapters.gwm_adapter import GWMAdapter
 from app.adapters.base import BaseStorageAdapter
 from app.core.config import settings
 from app.schemas.file import FileType
-import os
 
 
 class StorageService:
@@ -33,17 +34,45 @@ class StorageService:
             # Создаем экземпляр адаптера
             self.adapters[file_type] = adapter_class(config)
 
-    def upload_file(self, db: Session, file_type: FileType, file_path: str, file_name: str, folder: Optional[str] = None, tags: Optional[list] = None):
+    async def upload_file(
+            self,
+            db: AsyncSession,
+            file_type: FileType,
+            file_path: str,
+            file_name: str,
+            folder: Optional[str] = None,
+            tags: Optional[list] = None
+    ) -> dict:
         if file_type not in self.adapters:
             raise ValueError(f"Адаптер для типа '{file_type}' не настроен")
 
         adapter = self.adapters[file_type]
-        result = adapter.upload_file(file_path, file_name, folder)
+
+        # 🔍 Debug: Check if the adapter and method are async
+        print(f"Using adapter: {adapter}, Type: {type(adapter)}")
+        print(f"Adapter upload_file method: {adapter.upload_file}")
+        print(f"Is upload_file callable? {callable(adapter.upload_file)}")
+        print(f"Is upload_file a coroutine? {asyncio.iscoroutinefunction(adapter.upload_file)}")
+
+        if not asyncio.iscoroutinefunction(adapter.upload_file):
+            raise TypeError(f"Adapter `{adapter}` does not have an async `upload_file` method!")
+
+        result = await adapter.upload_file(file_path, file_name, folder)  # 🔥 This is failing
+
+        if not isinstance(result, dict):
+            raise TypeError(f"Expected dict from adapter.upload_file(), got {type(result)}")
 
         file_id = result["file_id"]
         file_url = result["url"]
-        file_size = os.path.getsize(file_path)
+
+        file_size = await asyncio.to_thread(os.path.getsize, file_path)
         file_extension = os.path.splitext(file_name)[-1].lstrip(".")
 
-        return {"file_id": file_id, "url": file_url, "file_size":file_size, "file_extension":file_extension}
+        return {
+            "file_id": file_id,
+            "url": file_url,
+            "file_size": file_size,
+            "file_extension": file_extension
+        }
+
 

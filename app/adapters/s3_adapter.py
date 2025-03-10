@@ -16,7 +16,7 @@ class S3Adapter(BaseStorageAdapter):
             region_name=self.region,
         )
 
-    def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
+    async def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
         """
         Загружает файл в S3, поддерживает каталоги (префиксы).
         :param file_path: путь к файлу

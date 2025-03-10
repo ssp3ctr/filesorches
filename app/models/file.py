@@ -1,7 +1,6 @@
 import uuid
-from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy import Column, String, Integer, DateTime
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from datetime import datetime, UTC
 from app.database.postgre_engine import Base
 

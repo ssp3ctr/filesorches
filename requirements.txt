@@ -8,4 +8,5 @@ uvicorn~=0.34.0
 alembic~=1.13.2
 python-dotenv~=1.0.1
 psycopg2-binary
+asyncpg
 python-multipart

@@ -12,7 +12,7 @@ class BaseStorageAdapter(ABC):
         self.config = config
 
     @abstractmethod
-    def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
+    async def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
         """
         Abstract method for uploading files.
             :param file_path: Path to the file on the server

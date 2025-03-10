@@ -13,7 +13,7 @@ class TCPAdapter(BaseStorageAdapter):
 
         os.makedirs(self.storage_path, exist_ok=True)
 
-    def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
+    async def upload_file(self, file_path: str, file_name: str, folder: Optional[str] = None) -> Dict[str, str]:
         dest_path = os.path.join(self.storage_path, file_name)
 
         try:

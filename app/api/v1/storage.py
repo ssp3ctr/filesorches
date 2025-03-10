@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException, Query
 from typing import List, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession  # Use AsyncSession instead of Session
 import shutil
 import tempfile
 import os
@@ -13,25 +13,26 @@ from app.services.storage_service import StorageService
 
 router = APIRouter()
 
-
 @router.post("/files/")
 async def create_file(
     file: UploadFile = File(...),
     file_type: FileType = Form(...),
     folder: Optional[str] = Form(None),
     tags: Optional[List[str]] = Form(None),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),  # Use AsyncSession
 ):
     temp_file_path = None
 
     try:
+        # Create temporary file asynchronously
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
             temp_file_path = tmp.name
             shutil.copyfileobj(file.file, tmp)
 
         storage_service = StorageService()
 
-        upload_result = storage_service.upload_file(
+        # Call async method
+        upload_result = await storage_service.upload_file(
             db=db,
             file_type=file_type,
             file_path=temp_file_path,
@@ -40,7 +41,7 @@ async def create_file(
             tags=tags
         )
 
-        created_file = FileMetadataService.create_file(
+        created_file = await FileMetadataService.create_file(  # Await async method
             db=db,
             filename=file.filename,
             file_type=file_type,
@@ -49,6 +50,9 @@ async def create_file(
             size=upload_result["file_size"],
             tags=tags or []
         )
+
+        if not created_file:
+            raise HTTPException(status_code=500, detail="Failed to create file metadata")
 
         return {
             "status": "success",
@@ -63,32 +67,32 @@ async def create_file(
 
 
 @router.get("/files/{file_id}")
-def get_file(file_id: uuid.UUID, db: Session = Depends(get_db)):
-    file = FileMetadataService.get_file_by_id(db, file_id)
+async def get_file(file_id: uuid.UUID, db: AsyncSession = Depends(get_db)):  # Use AsyncSession
+    file = await FileMetadataService.get_file_by_id(db, file_id)  # Await async call
     if not file:
         raise HTTPException(status_code=404, detail="Файл не найден")
     return file
 
 
 @router.get("/files/")
-def search_files_by_tags(
+async def search_files_by_tags(
     tags: List[str] = Query(..., description="List of tags"),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
-    return FileMetadataService.get_files_by_tags(db, tags)
+    return await FileMetadataService.get_files_by_tags(db, tags)  # Await async call
 
 
 @router.delete("/files/{file_id}")
-def delete_file(file_id: uuid.UUID, db: Session = Depends(get_db)):
-    success = FileMetadataService.delete_file(db, file_id)
+async def delete_file(file_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+    success = await FileMetadataService.delete_file(db, file_id)  # Await async call
     if not success:
         raise HTTPException(status_code=404, detail="Файл не найден")
     return {"detail": "Файл удален"}
 
 
 @router.put("/files/{file_id}/tags")
-def update_file_tags(file_id: uuid.UUID, new_tags: List[str], db: Session = Depends(get_db)):
-    file = FileMetadataService.update_file_tags(db, file_id, new_tags)
+async def update_file_tags(file_id: uuid.UUID, new_tags: List[str], db: AsyncSession = Depends(get_db)):
+    file = await FileMetadataService.update_file_tags(db, file_id)  # Await async call
     if not file:
         raise HTTPException(status_code=404, detail="Файл не найден")
     return file
