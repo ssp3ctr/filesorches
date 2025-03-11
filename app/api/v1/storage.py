@@ -91,8 +91,8 @@ async def delete_file(file_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
 
 
 @router.put("/files/{file_id}/tags")
-async def update_file_tags(file_id: uuid.UUID, new_tags: List[str], db: AsyncSession = Depends(get_db)):
-    file = await FileMetadataService.update_file_tags(db, file_id)  # Await async call
+async def update_file_tags(file_id: uuid.UUID, tags: List[str], db: AsyncSession = Depends(get_db)):
+    file = await FileMetadataService.update_file_tags(db, file_id, tags)  # Await async call
     if not file:
         raise HTTPException(status_code=404, detail="Файл не найден")
     return file
