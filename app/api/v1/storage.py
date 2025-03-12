@@ -45,9 +45,9 @@ async def create_file(
             db=db,
             filename=file.filename,
             file_type=file_type,
-            filepath="",
-            extension="",
-            size=0,
+            filepath=upload_result["url"],
+            extension=upload_result["file_extension"],
+            size=upload_result["file_size"],
             tags=tags or []
         )
 
