@@ -96,3 +96,8 @@ async def update_file_tags(file_id: uuid.UUID, tags: List[str], db: AsyncSession
     if not file:
         raise HTTPException(status_code=404, detail="Файл не найден")
     return file
+
+
+@router.get("/health_check")
+async def healthcheck():
+    return {"status": "ok"}

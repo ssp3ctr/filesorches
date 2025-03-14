@@ -1,5 +1,5 @@
 # Используем официальный образ Python
-FROM python:3.11
+FROM python:3.11-slim
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -9,8 +9,7 @@ COPY . /app
 
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -y postgresql-client
 
-# Убеждаемся, что БД доступна перед миграциями
-# CMD bash -c "while !</dev/tcp/$POSTGRES_HOST/$POSTGRES_PORT; do sleep 1; done; alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-# CMD ["sh", "-c", "python wait_for_db.py && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
+EXPOSE 8000
+ENTRYPOINT [ "bash", "entrypoint.sh" ]

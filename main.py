@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from app.api.v1 import storage
+from app.core.config import settings
 
-app = FastAPI(title="Storage Orchestrator")
+app = FastAPI(
+    root_path=settings.root_path,
+    title="Storage Orchestrator"
+)
 
 app.include_router(storage.router, prefix="/api/v1", tags=["Files"])
 
